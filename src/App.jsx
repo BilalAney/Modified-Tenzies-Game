@@ -21,7 +21,7 @@ function App() {
     ); //we will use .every() method to check if all values are the same
 
     const allHeld = dice.every((ele) => ele.held === true); //same as the previous one, but with held value
-    if (allHeld || count >= 60 || unselectCount >= 5) {
+    if (allHeld || count >= 30 || unselectCount >= 5) {
       //if all are the same then, set the finish state to true
       allNewDie();
       setFinish(true);
@@ -167,7 +167,7 @@ function App() {
       </h3>
 
       <div className="counter">
-        Moves: {count} / 60 <br />
+        Moves: {count} / 30 <br />
         Unmoves: {unselectCount} / 5 <br />
         Time: {!finish && <Timer restart={finish} />}
       </div>
