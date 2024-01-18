@@ -1,30 +1,18 @@
-import PropTypes from "prop-types";
-import { useState, useEffect, useRef, memo } from "react";
+/** @format */
 
-/** WARNING !
- * Note that the timer will run normally unless you run the game in the
- * React's "Strict Mode" which would run each side effect twice!
- * If you tested the game on the "Strict Mode"
- * The timer would be icreasing by 2,
- * So 2 seconds corresponds to 1 second
- *    2 minutes corresponds to 1 minutes
- * Just in case you won the game after 150 minutes ;-(
- * NEVER MIND you won it within 75 minutes ;-)
- */
-function Timer({ restart }) {
-  const [timer, setTimer] = useState(0);
+import PropTypes from "prop-types";
+import { useEffect, useRef } from "react";
+
+export default function Timer({ restart, timer, setTimer }) {
   const ref_timer = useRef(null);
 
   useEffect(() => {
-    if (!restart) {
-      ref_timer.current = setInterval(() => {
-        setTimer((time) => time + 1);
-      }, 1000);
-    } else {
-      setTimer(0);
-      return () => clearInterval(ref_timer.current);
-    }
-  }, [restart]);
+    ref_timer.current = setInterval(() => {
+      setTimer((time) => time + 1);
+    }, 1000);
+
+    return () => clearInterval(ref_timer.current);
+  }, []); //here there is an empty array in he dependency list, to run it once...
 
   //In order to format the minuts to two digits, we will add zero at the beginning, and slice the string starting from -2 (before the last digit).
   //In order to increase it every 60 seconds, we divide the number of the timer by 60, so that we get fractions number, then we get the remaining of
@@ -42,11 +30,20 @@ function Timer({ restart }) {
   );
 }
 
+/**
+ * I have "de-memoized" this component, Because I wanted to include the timer
+ * in the FinishBoard, and to do this, I should move the timer state up, so i did it.
+ * Now each second the whole app component will be re-rendered, so there is no need to memoize
+ * the timer
+ */
+
 //Optimization code here ...
 //I will use memo so that this component (The Time Counter) will not
 //be re-rendered after each time the player hits a button!
-export default memo(Timer);
+// export default memo(Timer);
 
 Timer.propTypes = {
   restart: PropTypes.bool.isRequired,
+  timer: PropTypes.number.isRequired,
+  setTimer: PropTypes.func.isRequired,
 };

@@ -1,3 +1,5 @@
+/** @format */
+
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import "./components/dice.jsx";
@@ -11,8 +13,10 @@ function App() {
   const [count, setCount] = useState(0);
   const [unselectCount, setUnselectCount] = useState(0);
   const [win, setWin] = useState(false); //This is an extra state, try to remove it, convert it to a normal variable
+  const [timer, setTimer] = useState(0);
 
   const ref = useRef();
+  const timeCopy = useRef();
 
   useEffect(() => {
     const firstValue = dice[0]?.value; //getting the first dice value, in order to compare it
@@ -25,6 +29,8 @@ function App() {
       //if all are the same then, set the finish state to true
       allNewDie();
       setFinish(true);
+      timeCopy.current = timer;
+      setTimer(0);
       if (allSame) setWin(true);
     }
   }, [dice]);
@@ -106,7 +112,7 @@ function App() {
     return newArr;
   }
 
-  /**This function will return randm number
+  /**This function will return random number
    * It accepts a boolean value to decide wheather to
    * generate a number from the 1-10 range or a custom range
    * If this was false, then it will generate a random number from 1-10
@@ -169,7 +175,7 @@ function App() {
       <div className="counter">
         Moves: {count} / 30 <br />
         Unmoves: {unselectCount} / 5 <br />
-        Time: {!finish && <Timer restart={finish} />}
+        Time: {!finish && <Timer timer={timer} setTimer={setTimer} />}
       </div>
 
       <div className="diceContainer">{diceElements}</div>
@@ -186,6 +192,7 @@ function App() {
           isWinner={win}
           count={count + unselectCount}
           handleClick={resetButton}
+          timer={timeCopy.current}
         />
       )}
     </>
